@@ -1,14 +1,13 @@
-const VALID_MOVES = ['rock', 'paper', 'scissors'];
+let playerScore = 0;
+let computerScore = 0;
+let currentRound = 1;
 
-function getPlayerChoice() {
-    let playerChoice;
+const MAX_ROUNDS = 5;
+const VALID_MOVES = ['rock', 'paper', 'scissor'];
 
-    do {
-        playerChoice = prompt("Enter: rock, paper or scissors").toLowerCase();
-    } while (!VALID_MOVES.includes(playerChoice));
-
-    return playerChoice;
-}
+const choices = document.querySelector("#choices");
+const results = document.querySelector("#results");
+const finalScore = document.querySelector("#final_score");
 
 function getComputerChoice() {
     const randomNumber = Math.floor(Math.random() * 3);
@@ -17,54 +16,71 @@ function getComputerChoice() {
 
 function playRound(playerChoice, computerChoice) {
     if (playerChoice === computerChoice) {
-        return "It's a tie!";
+        return "tie";
     }
 
     if (
-        (playerChoice === 'rock' && computerChoice === 'scissors') ||
-        (playerChoice === 'scissors' && computerChoice === 'paper') ||
+        (playerChoice === 'rock' && computerChoice === 'scissor') ||
+        (playerChoice === 'scissor' && computerChoice === 'paper') ||
         (playerChoice === 'paper' && computerChoice === 'rock')
     ) {
-        return "Player wins!";
+        return "player";
     }
 
-    return "Computer wins!";
+    return "computer";
 }
 
-
-function game() {
-    let playerScore = 0;
-    let computerScore = 0;
-
-    for (let round = 1; round <= 5; round++) {
-        const playerChoice = getPlayerChoice();
-        const computerChoice = getComputerChoice();
-
-        const result = playRound(playerChoice, computerChoice);
-
-        if (result === "Player wins!") {
-            playerScore++;
-        } else if (result === "Computer wins!") {
-            computerScore++;
-        }
-
-        console.log(`Round ${round}: 
-            Player chose: ${playerChoice}
-            Computer chose: ${computerChoice}
-            ${result}`);
+function handleRound(playerChoice, round) {
+    if (round === MAX_ROUNDS) {
+        updateScore(playRound(playerChoice, getComputerChoice()), round);
+        showFinalScore();
+        return false;
     }
 
-    if (playerScore > computerScore) {
-        console.log(`You win the game! 
-            Your score: ${playerScore} 
-            Computer score: ${computerScore}`);
-    } else if (computerScore > playerScore) {
-        console.log(`Computer wins the game! 
-            Your score: ${playerScore} 
-            Computer score: ${computerScore}`);
+    const computerChoice = getComputerChoice();
+    const result = playRound(playerChoice, computerChoice);
+    console.log(`${playerChoice} - ${computerChoice} = ${result} wins`);
+
+    updateScore(result, round);
+
+    return true;
+}
+
+function updateScore(result, round) {
+    if (result === "player") {
+        playerScore++;
+        results.textContent = `Round ${round}: Player wins!`;
+    }
+    else if (result === "computer") {
+        computerScore++;
+        results.textContent = `Round ${round}: Computer wins!`;
     } else {
-        console.log("It's a tie game!");
+        results.textContent = `Round ${round}: It's a tie!`;
     }
 }
 
-game();
+function showFinalScore() {
+    if (playerScore > computerScore) {
+        finalScore.textContent = `You win the game! 
+        Your score: ${playerScore} 
+        Computer score: ${computerScore}`;
+    } else if (computerScore > playerScore) {
+        finalScore.textContent = `Computer wins the game! 
+        Your score: ${playerScore} 
+        Computer score: ${computerScore}`;
+    } else {
+        finalScore.textContent = `It's a tie game!
+        Your score: ${playerScore} 
+        Computer score: ${computerScore}`;
+    }
+}
+
+choices.addEventListener("click", (e) => {
+    if (VALID_MOVES.includes(e.target.id)) {
+        if (handleRound(e.target.id, currentRound)) {
+            currentRound++;
+        }
+    } else {
+        console.error(`${e.target.id} is not a valid game option! - Valid moves: ${VALID_MOVES.join(', ')}`)
+    }
+});
