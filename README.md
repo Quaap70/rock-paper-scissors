@@ -4,7 +4,9 @@ A simple implementation of the classic Rock Paper Scissors game in JavaScript. T
 
 ## Description
 
-This project is a console-based version of Rock Paper Scissors where you play against the computer. The game consists of 5 rounds, and after each round, the winner is displayed. At the end of the game, the final scores are shown and the overall winner is announced.
+This project was originally a console-based version of Rock Paper Scissors where you play against the computer. The game consists of 5 rounds, and after each round, the winner is displayed. At the end of the game, the final scores are shown and the overall winner is announced.
+
+Added UI functionality
 
 ## Game Rules
 
